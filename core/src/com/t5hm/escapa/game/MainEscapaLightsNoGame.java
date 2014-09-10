@@ -12,6 +12,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
+import com.badlogic.gdx.physics.box2d.ChainShape;
 import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
@@ -75,7 +76,12 @@ public class MainEscapaLightsNoGame extends ApplicationAdapter {
         circleShape.setRadius(9f); // ideal size is tennis ball, but this is larger and in meters
 
         FixtureDef circleFixture = new FixtureDef();
-        circleFixture.shape = circleShape;
+        ChainShape chainShape = new ChainShape();
+        chainShape.createLoop(new Vector2[] { new Vector2(-22, 1),
+                new Vector2(22, 1), new Vector2(22, 31), new Vector2(0, 20),
+                new Vector2(-22, 31) });
+        circleFixture.shape = chainShape ;
+//        circleFixture.shape = circleShape;
         circleFixture.density = 0.4f; //kg/m^2
 //        circleFixture.friction = 0.2f; // 0-1
         circleFixture.friction = 0f; // 0-1
