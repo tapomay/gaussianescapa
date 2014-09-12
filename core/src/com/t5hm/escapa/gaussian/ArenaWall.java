@@ -8,10 +8,12 @@ public class ArenaWall {
         BOTTOM, LEFT, TOP, RIGHT
     }
     private float x1, y1, x2, y2;
+    private SIDE side;
 
-    public ArenaWall(int arenaWidth, int arenaHeight, int marginPercent, SIDE side) {
-        float xMargin = (float)(arenaWidth * marginPercent) / 100;
-        float yMargin = (float)(arenaHeight * marginPercent) / 100;
+    public ArenaWall(int arenaWidth, int arenaHeight, float marginRatio, SIDE side) {
+        float xMargin = (float)arenaWidth * marginRatio;
+        float yMargin = (float)arenaHeight * marginRatio;
+        this.side = side;
 
         switch (side) {
             case BOTTOM :
@@ -60,4 +62,24 @@ public class ArenaWall {
     public void setY2(float y2) {
         this.y2 = y2;
     }
+
+    public SIDE getSide() {
+        return side;
+    }
+
+    public void setSide(SIDE side) {
+        this.side = side;
+    }
+
+    @Override
+    public String toString() {
+        return "ArenaWall{" +
+                "x1=" + x1 +
+                ", y1=" + y1 +
+                ", x2=" + x2 +
+                ", y2=" + y2 +
+                ", side=" + side +
+                '}';
+    }
+
 }

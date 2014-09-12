@@ -11,13 +11,13 @@ public class Arena {
     private int arenaWidth;
     private int arenaHeight;
 
-    public Arena(int arenaWidth, int arenaHeight, int marginPercent) {
+    public Arena(int arenaWidth, int arenaHeight, float marginRatio) {
         this.arenaWidth = arenaWidth;
         this.arenaHeight = arenaHeight;
-        this.bottomWall = new ArenaWall(arenaWidth, arenaHeight, marginPercent, ArenaWall.SIDE.BOTTOM);
-        this.leftWall = new ArenaWall(arenaWidth, arenaHeight, marginPercent, ArenaWall.SIDE.LEFT);
-        this.topWall = new ArenaWall(arenaWidth, arenaHeight, marginPercent, ArenaWall.SIDE.TOP);
-        this.rightWall = new ArenaWall(arenaWidth, arenaHeight, marginPercent, ArenaWall.SIDE.RIGHT);
+        this.bottomWall = new ArenaWall(arenaWidth, arenaHeight, marginRatio, ArenaWall.SIDE.BOTTOM);
+        this.leftWall = new ArenaWall(arenaWidth, arenaHeight, marginRatio, ArenaWall.SIDE.LEFT);
+        this.topWall = new ArenaWall(arenaWidth, arenaHeight, marginRatio, ArenaWall.SIDE.TOP);
+        this.rightWall = new ArenaWall(arenaWidth, arenaHeight, marginRatio, ArenaWall.SIDE.RIGHT);
     }
 
     public int getArenaWidth() {

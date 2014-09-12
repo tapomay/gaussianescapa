@@ -1,5 +1,6 @@
 package com.t5hm.escapa.game;
 
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
@@ -37,9 +38,13 @@ public class MasterBuilder {
         this.rayHandler = rayHandler;
     }
 
+    public void render(SpriteBatch spriteBatch) {
+
+    }
+
     public World createWorld(WorldSpec worldSpec) {
         Arena arena = worldSpec.getArena();
-        materializeArena(arena);
+        materializeArena(arena, worldSpec.getMagList());
 
         Player player = worldSpec.getPlayer();
         playerBody = materializeMagSphere(player);
@@ -87,7 +92,7 @@ public class MasterBuilder {
         return groundBody;
     }
 
-    private Body materializeArena(Arena arena) {
+    private Body materializeArena(Arena arena, List<ControlMagnet> magList) {
         BodyDef arenaBodyDef = new BodyDef();
         arenaBodyDef.position.set(0, 0);
         arenaBodyDef.type = BodyDef.BodyType.StaticBody;
@@ -120,6 +125,19 @@ public class MasterBuilder {
         Fixture rightWallFixture = arenaBody.createFixture(wallFixtureDef);
         rightWallFixture.setUserData(rightWall);
 
+        PolygonShape polygonShape = new PolygonShape();
+
+        for (ControlMagnet mag : magList) {
+            System.out.println(mag);
+            System.out.println(mag.getArenaWall());
+            float xcenter = mag.getLeftBottomX() + mag.getWidth() / 2;
+            float ycenter = mag.getLeftBottomY() + mag.getHeight() / 2;
+            Vector2 center = new Vector2(xcenter, ycenter);
+            System.out.println(mag.getArenaWall().getSide() + " : " + center);
+            polygonShape.setAsBox(mag.getWidth() / 2, mag.getHeight() / 2, center, 0f);
+            Fixture fixture = arenaBody.createFixture(polygonShape, 0f);
+            fixture.setUserData(mag);
+        }
         return arenaBody;
     }
 }

@@ -17,11 +17,27 @@ public class MainEscapaGame extends ApplicationAdapter {
     private float accumulator = 0;
 	SpriteBatch batch;
 	Texture img;
+    private MasterBuilder masterBuilder;
 
     private OrthographicCamera camera;
     World world;
+
+    @Override
+    public void dispose() {
+        super.dispose();
+        batch.dispose();
+        img.dispose();
+        world.dispose();
+    }
+
     Box2DDebugRenderer debugRenderer;
     private RayHandler rayHandler;
+
+    @Override
+    public void resize(int width, int height) {
+        super.resize(width, height);
+        camera.update();
+    }
 
     @Override
 	public void create () {
@@ -32,11 +48,13 @@ public class MainEscapaGame extends ApplicationAdapter {
         debugRenderer = new Box2DDebugRenderer();
 		batch = new SpriteBatch();
 		img = new Texture("data/badlogic.jpg");
-        WorldSpec worldSpec = WorldSpec.create();
+        int worldWidth = Gdx.graphics.getWidth();
+        int worldHeight = Gdx.graphics.getHeight();
+        WorldSpec worldSpec = WorldSpec.create(worldWidth, worldHeight);
         camera = new OrthographicCamera();
         camera.setToOrtho(false);
         rayHandler = new RayHandler(world);
-        MasterBuilder masterBuilder = new MasterBuilder(world, rayHandler);
+        masterBuilder = new MasterBuilder(world, rayHandler);
         masterBuilder.createWorld(worldSpec);
 	}
 
@@ -46,8 +64,9 @@ public class MainEscapaGame extends ApplicationAdapter {
 		Gdx.gl.glClearColor(1, 0, 0, 0);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		batch.begin();
-//        batch.draw(img, camera.viewportWidth / 2 - img.getWidth()/2, camera.viewportHeight / 2 - img.getHeight()/2);
+//        batch.draw(img, camera.viewportWidth / 2 - img.getWorldWidth()/2, camera.viewportHeight / 2 - img.getWorldHeight()/2);
         batch.draw(img, 0, 0, camera.viewportWidth, camera.viewportHeight);
+        masterBuilder.render(batch);
 		batch.end();
         debugRenderer.render(world, camera.combined);
         doPhysicsStep(Gdx.graphics.getDeltaTime());

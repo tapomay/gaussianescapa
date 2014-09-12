@@ -158,7 +158,7 @@ public class MainEscapaLightsNoGame extends ApplicationAdapter {
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 //		batch.begin();
-//		batch.draw(img, Constants.Game.WIDTH/2 - img.getWidth()/2, Constants.Game.HEIGHT/2 - img.getHeight()/2);
+//		batch.draw(img, Constants.Game.WIDTH/2 - img.getWorldWidth()/2, Constants.Game.HEIGHT/2 - img.getWorldHeight()/2);
 //		batch.end();
         debugRenderer.render(world, camera.combined);
         rayHandler.updateAndRender();
