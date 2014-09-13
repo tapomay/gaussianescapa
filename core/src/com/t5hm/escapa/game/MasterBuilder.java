@@ -1,6 +1,6 @@
 package com.t5hm.escapa.game;
 
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
@@ -18,8 +18,12 @@ import com.t5hm.escapa.gaussian.MagSphere;
 import com.t5hm.escapa.gaussian.Player;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
+import box2dLight.Light;
+import box2dLight.PointLight;
 import box2dLight.RayHandler;
 
 /**
@@ -27,34 +31,62 @@ import box2dLight.RayHandler;
  */
 public class MasterBuilder {
 
+    private static final int RAYS_PER_BALL = 200;
+    private static final float LIGHT_DISTANCE = 30f;
+
     private World world;
     private RayHandler rayHandler;
     private Body playerBody;
-    private List<Body> enemyBodyList = new ArrayList<Body>();
-    private List<Body> magBodyList = new ArrayList<Body>();
+    private List<Body> enemyBodyList;
+    private List<Fixture> magFixtureList;
+    private Set<ControlMagnet> magnetizedMagnets;
 
     public MasterBuilder(World world, RayHandler rayHandler) {
         this.world = world;
         this.rayHandler = rayHandler;
-    }
-
-    public void render(SpriteBatch spriteBatch) {
-
+        this.magnetizedMagnets = new HashSet<ControlMagnet>();
     }
 
     public World createWorld(WorldSpec worldSpec) {
         Arena arena = worldSpec.getArena();
-        materializeArena(arena, worldSpec.getMagList());
+        List<ControlMagnet> magList = worldSpec.getMagList();
+        magFixtureList = new ArrayList<Fixture>(magList.size());
+
+        materializeArena(arena, magList);
 
         Player player = worldSpec.getPlayer();
         playerBody = materializeMagSphere(player);
 
         List<Enemy> enemyList = worldSpec.getEnemyList();
+        enemyBodyList = new ArrayList<Body>(enemyList.size());
         for (Enemy enemy : enemyList) {
             Body enemyBody = materializeMagSphere(enemy);
             enemyBodyList.add(enemyBody);
         }
+
+        setupEffects(rayHandler);
         return world;
+    }
+
+    private void setupEffects(RayHandler rayHandler) {
+        MathUtils.random.setSeed(Long.MIN_VALUE);
+
+        rayHandler.setAmbientLight(0.2f, 0.2f, 0.2f, 0.1f);
+        rayHandler.setCulling(true);
+        rayHandler.setBlurNum(1);
+
+        Light light = new PointLight(rayHandler, RAYS_PER_BALL * 2);
+        light.setDistance(LIGHT_DISTANCE * 2);
+        light.attachToBody(playerBody, 0, 0.5f);
+        light.setColor(0, 255, 255, 1f);
+
+        for (Body enemyBody : enemyBodyList) {
+            Light enemylight = new PointLight(rayHandler, RAYS_PER_BALL);
+            enemylight.setDistance(LIGHT_DISTANCE);
+            enemylight.attachToBody(enemyBody, 0, 0.5f);
+            enemylight.setColor(MathUtils.random(), MathUtils.random(),
+                    MathUtils.random(), 1f);
+        }
     }
 
     private FixtureDef createCircleFixtureDef(int radius) {
@@ -80,16 +112,6 @@ public class MasterBuilder {
         body.createFixture(circleFixtureDef);
         body.setUserData(sphere);
         return body;
-    }
-
-    private Body materializeControlMagnet(ControlMagnet controlMagnet) {
-        BodyDef bodyDef = new BodyDef();
-        bodyDef.position.set(controlMagnet.getLeftBottomX(), controlMagnet.getLeftBottomY());
-        Body groundBody = world.createBody(bodyDef);
-        PolygonShape groundBox = new PolygonShape();
-        groundBox.setAsBox(controlMagnet.getWidth(), controlMagnet.getHeight());
-        groundBody.createFixture(groundBox, ControlMagnet.DENSITY);
-        return groundBody;
     }
 
     private Body materializeArena(Arena arena, List<ControlMagnet> magList) {
@@ -133,11 +155,55 @@ public class MasterBuilder {
             float xcenter = mag.getLeftBottomX() + mag.getWidth() / 2;
             float ycenter = mag.getLeftBottomY() + mag.getHeight() / 2;
             Vector2 center = new Vector2(xcenter, ycenter);
-            System.out.println(mag.getArenaWall().getSide() + " : " + center);
+//            System.out.println(mag.getArenaWall().getSide() + " : " + center);
             polygonShape.setAsBox(mag.getWidth() / 2, mag.getHeight() / 2, center, 0f);
             Fixture fixture = arenaBody.createFixture(polygonShape, 0f);
             fixture.setUserData(mag);
+            magFixtureList.add(fixture);
         }
         return arenaBody;
     }
+
+    public Body getPlayerBody() {
+        return playerBody;
+    }
+
+    public void setPlayerBody(Body playerBody) {
+        this.playerBody = playerBody;
+    }
+
+    public List<Body> getEnemyBodyList() {
+        return enemyBodyList;
+    }
+
+    public void setEnemyBodyList(List<Body> enemyBodyList) {
+        this.enemyBodyList = enemyBodyList;
+    }
+
+    public List<Fixture> getMagFixtureList() {
+        return magFixtureList;
+    }
+
+    public void setMagFixtureList(List<Fixture> magFixtureList) {
+        this.magFixtureList = magFixtureList;
+    }
+
+    public void magnetise(ControlMagnet mag) {
+        magnetizedMagnets.add(mag);
+//        System.out.println("MAG_ENABLE: " + mag.getArenaWall().getSide());
+    }
+
+    public void deMagnetise() {
+        magnetizedMagnets.clear();
+//        System.out.println("DEMAG");
+    }
+
+    public void update() {
+        for (ControlMagnet mag : magnetizedMagnets) {
+//            System.out.println("MAG_APPLY: " + mag.getArenaWall().getSide());
+            Vector2 force = mag.getForce();
+            playerBody.applyForceToCenter(force.x, force.y, true);
+        }
+    }
+
 }

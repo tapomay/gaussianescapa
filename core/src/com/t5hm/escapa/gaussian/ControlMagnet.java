@@ -1,16 +1,18 @@
 package com.t5hm.escapa.gaussian;
 
+import com.badlogic.gdx.math.Vector2;
+
 /**
  * Created by tapomay on 6/9/14.
  */
 public class ControlMagnet {
-    public static final float DENSITY = 1f;
     private int currentAmps;
     private float leftBottomY;
     private float leftBottomX;
     private float height;
     private float width;
     private ArenaWall arenaWall;
+    private Vector2 force;
 
     public ControlMagnet(int currentAmps, float leftBottomY, float leftBottomX, float height, float width, ArenaWall arenaWall) {
         this.currentAmps = currentAmps;
@@ -19,6 +21,26 @@ public class ControlMagnet {
         this.height = height;
         this.width = width;
         this.arenaWall = arenaWall;
+        this.force = computeForceVector(arenaWall);
+    }
+
+    private Vector2 computeForceVector(ArenaWall arenaWall) {
+        Vector2 ret = null;
+        switch (arenaWall.getSide()) {
+            case BOTTOM:
+                ret = new Vector2(0, -this.currentAmps);
+                break;
+            case LEFT:
+                ret = new Vector2(-this.currentAmps, 0);
+                break;
+            case TOP:
+                ret = new Vector2(0, this.currentAmps);
+                break;
+            case RIGHT:
+                ret = new Vector2(this.currentAmps, 0);
+                break;
+        }
+        return ret;
     }
 
     public ArenaWall getArenaWall() {
@@ -79,5 +101,13 @@ public class ControlMagnet {
                 ", width=" + width +
                 ", side=" + arenaWall.getSide() +
                 '}';
+    }
+
+    public Vector2 getForce() {
+        return force;
+    }
+
+    public void setForce(Vector2 force) {
+        this.force = force;
     }
 }

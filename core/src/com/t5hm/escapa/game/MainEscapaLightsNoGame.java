@@ -148,9 +148,6 @@ public class MainEscapaLightsNoGame extends ApplicationAdapter {
         new ConeLight(rayHandler, rays, Color.PINK, distance, rWallBody.getPosition().x, camera.viewportHeight / 2, 180, coneDegree);
         new ConeLight(rayHandler, rays, Color.NAVY, distance, camera.viewportWidth / 2, roofBody.getPosition().y, 270, coneDegree);
 
-
-        //INPUT PROCESSOR
-        Gdx.input.setInputProcessor(new EscapaLightsInputAdapter());
     }
 
 	@Override

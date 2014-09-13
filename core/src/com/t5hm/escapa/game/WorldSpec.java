@@ -21,7 +21,7 @@ public class WorldSpec {
     private static final int DEFAULT_RADIUS_PERCENT = 5;
     private static final int MIN_ENEMIES = 2;
     private static final int MAX_ENEMIES = 7;
-    private static final int MAG_AMPS = 50;
+    private static final int MAG_AMPS = 25000;
 
     private Arena arena;
 
@@ -71,8 +71,6 @@ public class WorldSpec {
 
     private static ControlMagnet createMagnet(ArenaWall arenaWall, WorldSpec worldSpec) {
         int currentAmps = MAG_AMPS;
-        boolean landscape = ((arenaWall.getSide() == ArenaWall.SIDE.TOP)
-                || arenaWall.getSide() == (ArenaWall.SIDE.BOTTOM));
 
         float xMargin = 0;
         float yMargin = 0;

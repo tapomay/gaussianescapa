@@ -26,7 +26,7 @@ public class ArenaWall {
                 x1 = xMargin; y1 = arenaHeight - yMargin; x2 = arenaWidth - xMargin; y2 = arenaHeight - yMargin;
                 break;
             case RIGHT:
-                x1 = arenaWidth - xMargin; y1 = arenaHeight - yMargin; x2 = arenaWidth - xMargin; y2 = yMargin;
+                x1 = arenaWidth - xMargin; y1 = yMargin; x2 = arenaWidth - xMargin; y2 = arenaHeight - yMargin;
                 break;
         }
     }
