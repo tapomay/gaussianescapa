@@ -31,6 +31,30 @@ public class EscapaGameScreen implements Screen {
     private RayHandler rayHandler;
 
     @Override
+    public void show() {
+//        world = new World(new Vector2(0, -10), true);
+        world = new World(new Vector2(0, 0), true);
+
+        debugRenderer = new Box2DDebugRenderer();
+        batch = new SpriteBatch();
+        img = new Texture("data/badlogic.jpg");
+        int worldWidth = Gdx.graphics.getWidth();
+        int worldHeight = Gdx.graphics.getHeight();
+        WorldSpec worldSpec = WorldSpec.create(worldWidth, worldHeight);
+        camera = new OrthographicCamera();
+        camera.setToOrtho(false);
+
+        RayHandler.setGammaCorrection(true);
+        RayHandler.useDiffuseLight(true);
+
+        rayHandler = new RayHandler(world);
+        masterBuilder = new MasterBuilder(world, rayHandler);
+        masterBuilder.createWorld(worldSpec);
+        camera.update(true);
+        Gdx.input.setInputProcessor(new EscapaLightsInputAdapter(camera, masterBuilder));
+    }
+
+    @Override
     public void render(float delta) {
         camera.update();
         Gdx.gl.glClearColor(1, 0, 0, 0);
@@ -82,30 +106,6 @@ public class EscapaGameScreen implements Screen {
     @Override
     public void resize(int width, int height) {
 
-    }
-
-    @Override
-    public void show() {
-//        world = new World(new Vector2(0, -10), true);
-        world = new World(new Vector2(0, 0), true);
-
-        debugRenderer = new Box2DDebugRenderer();
-        batch = new SpriteBatch();
-        img = new Texture("data/badlogic.jpg");
-        int worldWidth = Gdx.graphics.getWidth();
-        int worldHeight = Gdx.graphics.getHeight();
-        WorldSpec worldSpec = WorldSpec.create(worldWidth, worldHeight);
-        camera = new OrthographicCamera();
-        camera.setToOrtho(false);
-
-        RayHandler.setGammaCorrection(true);
-        RayHandler.useDiffuseLight(true);
-
-        rayHandler = new RayHandler(world);
-        masterBuilder = new MasterBuilder(world, rayHandler);
-        masterBuilder.createWorld(worldSpec);
-        camera.update(true);
-        Gdx.input.setInputProcessor(new EscapaLightsInputAdapter(camera, masterBuilder));
     }
 
     @Override

@@ -19,9 +19,9 @@ public class WorldSpec {
     private static final float WALL_MARGIN_RATIO = 0.1f;
     private static final float MAG_MARGIN_RATIO = 0.03f;
     private static final int DEFAULT_RADIUS_PERCENT = 5;
-    private static final int MIN_ENEMIES = 2;
-    private static final int MAX_ENEMIES = 7;
-    private static final int MAG_AMPS = 25000;
+    private static final int MIN_ENEMIES = 5;
+    private static final int MAX_ENEMIES = 5;
+    private static final int MAG_AMPS = 15000;
 
     private Arena arena;
 

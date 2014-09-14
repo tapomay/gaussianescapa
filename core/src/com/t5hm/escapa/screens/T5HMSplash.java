@@ -7,7 +7,6 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.t5hm.escapa.game.MainEscapaGame;
 import com.t5hm.escapa.tween.SpriteAccessor;
 
 import aurelienribon.tweenengine.BaseTween;
@@ -59,7 +58,7 @@ public class T5HMSplash implements Screen {
 
             @Override
             public void onEvent(int type, BaseTween<?> source) {
-                ((Game) Gdx.app.getApplicationListener()).setScreen(new EscapaGameScreen());
+                ((Game) Gdx.app.getApplicationListener()).setScreen(new MainMenuScreen());
             }
         }).start(tweenManager);
 
