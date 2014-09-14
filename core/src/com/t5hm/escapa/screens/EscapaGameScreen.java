@@ -2,6 +2,7 @@ package com.t5hm.escapa.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.FPSLogger;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -9,6 +10,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
+import com.t5hm.escapa.game.Constants;
 import com.t5hm.escapa.game.EscapaLightsInputAdapter;
 import com.t5hm.escapa.game.MasterBuilder;
 import com.t5hm.escapa.game.WorldSpec;
@@ -29,12 +31,13 @@ public class EscapaGameScreen implements Screen {
     private World world;
     Box2DDebugRenderer debugRenderer;
     private RayHandler rayHandler;
+    FPSLogger fpsLogger;
 
     @Override
     public void show() {
 //        world = new World(new Vector2(0, -10), true);
         world = new World(new Vector2(0, 0), true);
-
+        fpsLogger = new FPSLogger();
         debugRenderer = new Box2DDebugRenderer();
         batch = new SpriteBatch();
         img = new Texture("data/badlogic.jpg");
@@ -64,21 +67,33 @@ public class EscapaGameScreen implements Screen {
         batch.end();
         masterBuilder.update();
         debugRenderer.render(world, camera.combined);
+        doPhysicsStep(Gdx.graphics.getDeltaTime());
 
-        boolean stepped = fixedStep(Gdx.graphics.getDeltaTime());
+        boolean stepped = fixedStep(delta);
 
         /** BOX2D LIGHT STUFF BEGIN */
 
-//        rayHandler.setCombinedMatrix(camera.combined, camera.position.x,
-//                camera.position.y, camera.viewportWidth * camera.zoom,
-//                camera.viewportHeight * camera.zoom);
+        rayHandler.setCombinedMatrix(camera.combined, camera.position.x,
+                camera.position.y, camera.viewportWidth * camera.zoom,
+                camera.viewportHeight * camera.zoom);
 
-        rayHandler.setCombinedMatrix(camera.combined);
+//        rayHandler.setCombinedMatrix(camera.combined);
         if (stepped)
             rayHandler.update();
         rayHandler.render();
-
+//        fpsLogger.log();
         /** BOX2D LIGHT STUFF END */
+    }
+
+    private void doPhysicsStep(float deltaTime) {
+        // fixed time step
+        // max frame time to avoid spiral of death (on slow devices)
+        float frameTime = Math.min(deltaTime, 0.25f);
+        accumulator += frameTime;
+        while (accumulator >= Constants.TIME_STEP) {
+            world.step(Constants.TIME_STEP, Constants.VELOCITY_ITERATIONS, Constants.POSITION_ITERATIONS);
+            accumulator -= Constants.TIME_STEP;
+        }
     }
 
     float physicsTimeLeft;

@@ -50,7 +50,7 @@ public class MainMenuScreen implements Screen {
 
 		// creating heading
         BitmapFont bitmapFont = new BitmapFont();
-        Label.LabelStyle labelStyle = new Label.LabelStyle(bitmapFont, Color.MAGENTA);
+        Label.LabelStyle labelStyle = new Label.LabelStyle(bitmapFont, Color.RED);
 		Label heading = new Label(GaussianEscapaStart.TITLE, labelStyle);
 		heading.setFontScale(2);
 
