@@ -6,6 +6,7 @@
 	<inherits name='Box2DLights' />
 
     <inherits name='MainEscapaGame' />
+	<inherits name='aurelienribon.tweenengine'/>
 	<entry-point class='com.t5hm.escapa.game.client.HtmlLauncher' />
 	
 	<add-linker name="xsiframe"/>

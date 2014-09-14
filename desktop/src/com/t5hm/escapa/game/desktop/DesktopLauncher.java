@@ -2,6 +2,7 @@ package com.t5hm.escapa.game.desktop;
 
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
+import com.t5hm.escapa.game.GaussianEscapaStart;
 import com.t5hm.escapa.game.MainEscapaGame;
 import com.t5hm.escapa.game.MainEscapaLightsNoGame;
 
@@ -13,6 +14,6 @@ public class DesktopLauncher {
         config.height = 360;
         config.useGL30 = true;
 //        new LwjglApplication(new MainEscapaGame(), config);
-        new LwjglApplication(new MainEscapaGame(), config);
+        new LwjglApplication(new GaussianEscapaStart(), config);
 	}
 }
