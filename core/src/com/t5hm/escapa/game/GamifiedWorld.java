@@ -31,7 +31,7 @@ public class GamifiedWorld {
 
     private Float timeElapsed = 0f;
     private Long timeDisplayed = 0l;
-    private Long hits = 0l;
+//    private Long hits = 0l;
 
     private GameScoreMode gameScoreMode;
 
@@ -71,17 +71,24 @@ public class GamifiedWorld {
         timeElapsed += delta;
         if (timeElapsed - timeDisplayed > 1) {
             timeDisplayed = timeElapsed.longValue();
+            gameScoreMode.timeTick();
         }
         updateScoreLabel(batch);
     }
 
     private void updateScoreLabel(SpriteBatch batch) {
-        String hitsStr = String.valueOf(hits);
-        String timeStr = String.valueOf(timeDisplayed);
+        String displayHits = gameScoreMode.getDisplayHits();
+        String displayTime = gameScoreMode.getDisplayTime();
+        String hitsStr = String.valueOf(displayHits);
+        String timeStr = String.valueOf(displayTime);
         hitsStr = "HITS : " + hitsStr;
         timeStr = "TIME : " + timeStr;
         timeFont.draw(batch, timeStr, 10, worldSpec.getWorldHeight() - 10);
         hitsFont.draw(batch, hitsStr, 12, worldSpec.getWorldHeight() - 15 - hitsFont.getLineHeight());
+    }
+
+    public void playerHit() {
+        gameScoreMode.playerHit();
     }
 
     public WorldSpec getWorldSpec() {
@@ -140,22 +147,6 @@ public class GamifiedWorld {
         this.magnetizedMagnets = magnetizedMagnets;
     }
 
-    public float getTimeElapsed() {
-        return timeElapsed;
-    }
-
-    public void setTimeElapsed(float timeElapsed) {
-        this.timeElapsed = timeElapsed;
-    }
-
-    public Long getTimeDisplayed() {
-        return timeDisplayed;
-    }
-
-    public void setTimeDisplayed(long timeDisplayed) {
-        this.timeDisplayed = timeDisplayed;
-    }
-
     public GameScoreMode getGameScoreMode() {
         return gameScoreMode;
     }
@@ -172,7 +163,4 @@ public class GamifiedWorld {
         System.out.println(display);
     }
 
-    public void playerHit() {
-        hits++;
-    }
 }
