@@ -72,7 +72,7 @@ public class T5HMSplash implements Screen {
         Tween.registerAccessor(Sprite.class, new SpriteAccessor());
 
         Tween.set(splashFg, SpriteAccessor.ALPHA).target(0).start(tweenManager);
-        Tween.to(splashFg, SpriteAccessor.ALPHA, 2f).target(1).repeatYoyo(1, .5f).setCallback(new TweenCallback() {
+        Tween.to(splashFg, SpriteAccessor.ALPHA, 1.5f).target(1).repeatYoyo(1, .5f).setCallback(new TweenCallback() {
 
             @Override
             public void onEvent(int type, BaseTween<?> source) {
@@ -128,8 +128,7 @@ public class T5HMSplash implements Screen {
 
     @Override
     public void dispose() {
-        if(batch != null)
-            batch.dispose();
+        batch.dispose();
         if (bgTexture != null)
             bgTexture.dispose();
         if (fgTexture != null)

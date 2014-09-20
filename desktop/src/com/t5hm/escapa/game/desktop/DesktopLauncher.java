@@ -9,7 +9,8 @@ import com.t5hm.escapa.game.MainEscapaLightsNoGame;
 public class DesktopLauncher {
 	public static void main (String[] arg) {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
-        config.title = "GaussianEscapa";
+        config.title = GaussianEscapaStart.TITLE + "v" + GaussianEscapaStart.VERSION;
+        config.vSyncEnabled = true;
         config.width = 720;
         config.height = 360;
 //        config.width = 1280;
