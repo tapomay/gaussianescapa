@@ -37,8 +37,6 @@ public class EscapaGameScreen implements Screen {
     Box2DDebugRenderer debugRenderer;
     private RayHandler rayHandler;
     FPSLogger fpsLogger;
-    Label scoreLabel;
-    Label timerLabel;
 
     @Override
     public void show() {

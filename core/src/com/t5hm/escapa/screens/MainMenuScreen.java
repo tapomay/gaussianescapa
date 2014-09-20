@@ -30,14 +30,13 @@ import com.t5hm.escapa.game.GaussianEscapaStart;
 public class MainMenuScreen implements Screen {
 
 	private Stage stage;
-    private TextureAtlas atlas;
+//    private TextureAtlas atlas;
 
     private Skin skin;
 
 	private Table table;
     private BitmapFont blackFont;
 
-    private Label heading;
     private Sprite splashBg;
     private Texture bgTexture;
 
@@ -45,12 +44,18 @@ public class MainMenuScreen implements Screen {
 	public void show() {
 //        atlas = new TextureAtlas("data/uiskin.json");
 //        skin = new Skin(atlas);
+
+//        float w = Gdx.graphics.getWidth();
+//        float h = Gdx.graphics.getHeight();
+//        stage = new Stage(new StretchViewport(w, h));
+        stage = new Stage();
+        Gdx.input.setInputProcessor(stage);
+
         skin = new Skin(Gdx.files.internal("data/uiskin.json"));
         blackFont = new BitmapFont(Gdx.files.internal("data/fonts/nfs-escapa.fnt"), false);
 //        Viewport viewport = new StretchViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 //        stage = new Stage(viewport);
-        stage = new Stage();
-		Gdx.input.setInputProcessor(stage);
+
 		table = new Table();
 //        table.setBounds(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		table.setFillParent(true);
@@ -81,7 +86,7 @@ public class MainMenuScreen implements Screen {
 				})));
 			}
 		});
-		buttonPlay.pad(15);
+		buttonPlay.pad(10);
 
 		TextButton buttonSettings = new TextButton("SETTINGS", skin, "default");
 		buttonSettings.addListener(new ClickListener() {
@@ -97,7 +102,7 @@ public class MainMenuScreen implements Screen {
 				})));
 			}
 		});
-		buttonSettings.pad(10);
+		buttonSettings.pad(5);
 
         TextButton buttonCredits = new TextButton("CREDITS", skin, "default");
         buttonCredits.addListener(new ClickListener() {
@@ -113,7 +118,7 @@ public class MainMenuScreen implements Screen {
                 })));
             }
         });
-        buttonCredits.pad(10);
+        buttonCredits.pad(5);
 
 		TextButton buttonExit = new TextButton("EXIT", skin, "default");
 		buttonExit.addListener(new ClickListener() {
@@ -123,14 +128,14 @@ public class MainMenuScreen implements Screen {
                 Gdx.app.exit();
 			}
 		});
-		buttonExit.pad(15);
+		buttonExit.pad(10);
 
 		// putting stuff together
-		table.add(heading).spaceBottom(50).row();
-		table.add(buttonPlay).spaceBottom(15).row();
-        table.add(buttonSettings).spaceBottom(15).row();
-        table.add(buttonCredits).spaceBottom(15).row();
-		table.add(buttonExit);
+		table.add(heading).spaceBottom(10).row();
+		table.add(buttonPlay).spaceBottom(5).row();
+        table.add(buttonSettings).spaceBottom(5).row();
+        table.add(buttonCredits).spaceBottom(5).row();
+		table.add(buttonExit).spaceBottom(5).row();
 
 		stage.addActor(table);
 
@@ -154,6 +159,10 @@ public class MainMenuScreen implements Screen {
     @Override
     public void resize(int width, int height) {
         table.invalidateHierarchy();
+        float w = Gdx.graphics.getWidth();
+        float h = Gdx.graphics.getHeight();
+        stage.getViewport().setWorldSize(w, h);
+
     }
 
     @Override
@@ -173,7 +182,10 @@ public class MainMenuScreen implements Screen {
 
 	@Override
 	public void dispose() {
-		stage.dispose();
+        stage.dispose();
+//        atlas.dispose();
+        skin.dispose();
+        blackFont.dispose();
         bgTexture.dispose();
 	}
 

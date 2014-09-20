@@ -18,4 +18,9 @@ public class ProgressiveMode extends GameScoreBase {
         return String.valueOf(timeElapsed);
     }
 
+    @Override
+    public String score() {
+        return String.valueOf(1000);
+    }
+
 }

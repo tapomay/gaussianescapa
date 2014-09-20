@@ -33,4 +33,10 @@ public abstract class GameScoreBase implements GameScoreMode{
         timeElapsed = 0;
         playerHits = 0l;
     }
+
+    @Override
+    public String gameTime() {
+        return String.valueOf(timeElapsed);
+    }
+
 }

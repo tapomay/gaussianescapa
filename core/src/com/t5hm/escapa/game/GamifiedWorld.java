@@ -1,5 +1,6 @@
 package com.t5hm.escapa.game;
 
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -9,6 +10,7 @@ import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.World;
 import com.t5hm.escapa.game.scores.GameScoreMode;
 import com.t5hm.escapa.gaussian.ControlMagnet;
+import com.t5hm.escapa.screens.ScoreScreen;
 
 import java.util.HashSet;
 import java.util.List;
@@ -31,7 +33,6 @@ public class GamifiedWorld {
 
     private Float timeElapsed = 0f;
     private Long timeDisplayed = 0l;
-//    private Long hits = 0l;
 
     private GameScoreMode gameScoreMode;
 
@@ -71,7 +72,10 @@ public class GamifiedWorld {
         timeElapsed += delta;
         if (timeElapsed - timeDisplayed > 1) {
             timeDisplayed = timeElapsed.longValue();
-            gameScoreMode.timeTick();
+            Boolean gameOver = gameScoreMode.timeTick();
+            if (gameOver) {
+                ((Game) Gdx.app.getApplicationListener()).setScreen(new ScoreScreen(gameScoreMode));
+            }
         }
         updateScoreLabel(batch);
     }
@@ -88,7 +92,10 @@ public class GamifiedWorld {
     }
 
     public void playerHit() {
-        gameScoreMode.playerHit();
+        Boolean gameOver = gameScoreMode.playerHit();
+        if (gameOver) {
+            ((Game) Gdx.app.getApplicationListener()).setScreen(new ScoreScreen(gameScoreMode));
+        }
     }
 
     public WorldSpec getWorldSpec() {

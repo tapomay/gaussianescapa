@@ -9,4 +9,6 @@ public interface GameScoreMode {
     Boolean playerHit();
     Boolean timeTick();
     void reset();
+    String score();
+    String gameTime();
 }

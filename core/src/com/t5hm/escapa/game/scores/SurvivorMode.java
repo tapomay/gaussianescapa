@@ -12,6 +12,7 @@ public class SurvivorMode extends GameScoreBase {
     public SurvivorMode(WorldSpec.DIFFICULTY difficulty, Integer totalTime) {
         this.difficulty = difficulty;
         this.displayTime = totalTime;
+        this.timeElapsed = totalTime;
     }
 
     @Override
@@ -26,4 +27,10 @@ public class SurvivorMode extends GameScoreBase {
             return true;
         return false;
     }
+
+    @Override
+    public String score() {
+        return String.valueOf(1000);
+    }
+
 }
