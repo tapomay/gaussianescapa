@@ -35,11 +35,13 @@ public class WorldSpec {
     }
 
     public  static enum DIFFICULTY {
-        VETERAN(5), HUMANE(10), NOBODY(20);
+        VETERAN(20, 10), HUMANE(10, 20), NOBODY(5, 30);
 
         public final int penalty;
-        DIFFICULTY(int i) {
+        public final int hits;
+        DIFFICULTY(int i, int j) {
             this.penalty = i;
+            this.hits = j;
         }
     }
 
@@ -98,7 +100,7 @@ public class WorldSpec {
         }
         ret.setEnemyList(enemies);
         ret.gameMode = GAME_MODE.PROGRESSIVE;
-        ret.gameMode = GAME_MODE.SURVIVOR;
+//        ret.gameMode = GAME_MODE.SURVIVOR;
         ret.difficulty = DIFFICULTY.HUMANE;
         return ret;
     }

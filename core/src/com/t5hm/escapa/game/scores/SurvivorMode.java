@@ -8,7 +8,7 @@ import com.t5hm.escapa.game.WorldSpec;
 public class SurvivorMode extends GameScoreBase {
 
     private static final double MODE_MAX_SCORE = 1000;
-    public static final Integer DEFAULT_SURVIVOR_TIME = 10;
+    public static final Integer DEFAULT_SURVIVOR_TIME = 60;
 
     private WorldSpec.DIFFICULTY difficulty;
     private Integer displayTime;

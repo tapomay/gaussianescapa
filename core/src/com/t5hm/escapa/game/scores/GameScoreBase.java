@@ -9,7 +9,9 @@ public abstract class GameScoreBase implements GameScoreMode{
     protected Long playerHits = 0l;
 
     @Override
-    public abstract String getDisplayTime();
+    public String getDisplayTime() {
+        return String.valueOf(timeElapsed);
+    }
 
     @Override
     public String getDisplayHits() {
