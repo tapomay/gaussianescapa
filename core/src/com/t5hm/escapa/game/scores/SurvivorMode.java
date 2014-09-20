@@ -7,6 +7,9 @@ import com.t5hm.escapa.game.WorldSpec;
  */
 public class SurvivorMode extends GameScoreBase {
 
+    private static final double MODE_MAX_SCORE = 1000;
+    public static final Integer DEFAULT_SURVIVOR_TIME = 10;
+
     private WorldSpec.DIFFICULTY difficulty;
     private Integer displayTime;
     public SurvivorMode(WorldSpec.DIFFICULTY difficulty, Integer totalTime) {
@@ -30,7 +33,10 @@ public class SurvivorMode extends GameScoreBase {
 
     @Override
     public String score() {
-        return String.valueOf(1000);
+        float penaltyMultiplier = (float)(100 - difficulty.penalty) / 100;
+        double scoreMultiplier  = Math.pow(penaltyMultiplier, playerHits);
+        Double score = MODE_MAX_SCORE * scoreMultiplier;
+        return String.valueOf(score.intValue());
     }
 
 }

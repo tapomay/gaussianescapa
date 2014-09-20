@@ -39,7 +39,6 @@ public class MasterBuilder {
     public static final String TIME_TEMPLATE = "TIME: ${TIME}";
     public static final String HITS_TEMPLATE = "HITS: ${HITS}";
     public static final String SCORE_TEMPLATE = "TIME: ${TIME} \nHITS: ${HITS}";
-    private static final Integer DEFAULT_SURVIVOR_TIME = 30;
 
 
     public MasterBuilder() {
@@ -83,7 +82,7 @@ public class MasterBuilder {
         switch (gameMode) {
 
             case SURVIVOR:
-                gameScoreMode = new SurvivorMode(difficulty, DEFAULT_SURVIVOR_TIME);
+                gameScoreMode = new SurvivorMode(difficulty, SurvivorMode.DEFAULT_SURVIVOR_TIME);
                 break;
             case PROGRESSIVE:
                 gameScoreMode = new ProgressiveMode(difficulty);
