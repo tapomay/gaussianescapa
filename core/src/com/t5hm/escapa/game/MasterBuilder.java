@@ -1,5 +1,8 @@
 package com.t5hm.escapa.game;
 
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
@@ -10,6 +13,10 @@ import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.t5hm.escapa.game.scores.GameScoreMode;
+import com.t5hm.escapa.game.scores.ProgressiveMode;
+import com.t5hm.escapa.game.scores.SurvivorMode;
 import com.t5hm.escapa.gaussian.Arena;
 import com.t5hm.escapa.gaussian.ArenaWall;
 import com.t5hm.escapa.gaussian.ControlMagnet;
@@ -40,6 +47,9 @@ public class MasterBuilder {
     private List<Body> enemyBodyList;
     private List<Fixture> magFixtureList;
     private Set<ControlMagnet> magnetizedMagnets;
+    private float timeElapsed = 0f;
+    private int timeDisplayed = 0;
+    private GameScoreMode gameScoreMode;
 
     public MasterBuilder(World world, RayHandler rayHandler) {
         this.world = world;
@@ -65,7 +75,21 @@ public class MasterBuilder {
         }
 
         setupEffects(rayHandler);
+        setupScoreMode(worldSpec.getGameMode(), worldSpec.getDifficulty());
         return world;
+    }
+
+    private void setupScoreMode(WorldSpec.GAME_MODE gameMode, WorldSpec.DIFFICULTY difficulty) {
+        switch (gameMode) {
+
+            case SURVIVOR:
+                gameScoreMode = new SurvivorMode();
+                break;
+            case PROGRESSIVE:
+                gameScoreMode = new ProgressiveMode();
+                break;
+        }
+
     }
 
     private void setupEffects(RayHandler rayHandler) {
@@ -198,12 +222,31 @@ public class MasterBuilder {
 //        System.out.println("DEMAG");
     }
 
-    public void update() {
+    public void update(SpriteBatch batch, float delta) {
         for (ControlMagnet mag : magnetizedMagnets) {
 //            System.out.println("MAG_APPLY: " + mag.getArenaWall().getSide());
             Vector2 force = mag.getForce();
             playerBody.applyForceToCenter(force.x, force.y, true);
         }
+        timeElapsed += delta;
+        if (timeElapsed - timeDisplayed > 1) {
+            timeDisplayed = (int) timeElapsed;
+//            score.setText(String.valueOf(timeDisplayed));
+//            score.invalidate();
+//            score.draw(batch, 0.5f);
+        }
+
+//        score.draw(batch, 1f);
+
     }
 
+    private void setupScoreLabel() {
+        BitmapFont bitmapFont = new BitmapFont();
+        Label.LabelStyle labelStyle = new Label.LabelStyle(bitmapFont, Color.GREEN);
+//        score = new Label("100", labelStyle);
+//        score.setText("100");
+//        score.setCenterPosition(worldWidth/2, worldHeight/2);
+//        score.setWidth(50);
+//        score.setHeight(50);
+    }
 }

@@ -1,6 +1,7 @@
 package com.t5hm.escapa.game;
 
 import com.badlogic.gdx.Game;
+import com.t5hm.escapa.screens.EscapaGameScreen;
 import com.t5hm.escapa.screens.T5HMSplash;
 
 /**
@@ -13,6 +14,7 @@ public class GaussianEscapaStart extends Game {
     @Override
     public void create() {
         setScreen(new T5HMSplash());
+//        setScreen(new EscapaGameScreen());
     }
 
     @Override

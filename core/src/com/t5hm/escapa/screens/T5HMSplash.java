@@ -29,7 +29,7 @@ public class T5HMSplash implements Screen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         batch.begin();
-        splash.draw(batch);
+        batch.draw(splash.getTexture(), 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         batch.end();
 
         tweenManager.update(delta);
@@ -51,10 +51,11 @@ public class T5HMSplash implements Screen {
         tweenManager = new TweenManager();
         Tween.registerAccessor(Sprite.class, new SpriteAccessor());
 
-        splash = new Sprite(new Texture("data/magneticfiel.jpg"));
-
+        splash = new Sprite(new Texture("data/splash.png"));
+//        splash.setCenter(Gdx.graphics.getWidth()/2, Gdx.graphics.getHeight()/2);
+//        splash.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         Tween.set(splash, SpriteAccessor.ALPHA).target(0).start(tweenManager);
-        Tween.to(splash, SpriteAccessor.ALPHA, 1.5f).target(1).repeatYoyo(1, .5f).setCallback(new TweenCallback() {
+        Tween.to(splash, SpriteAccessor.ALPHA, 2f).target(1).repeatYoyo(1, .5f).setCallback(new TweenCallback() {
 
             @Override
             public void onEvent(int type, BaseTween<?> source) {

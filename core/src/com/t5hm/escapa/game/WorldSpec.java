@@ -30,6 +30,38 @@ public class WorldSpec {
     private List<Enemy> enemyList;
     private int worldWidth, worldHeight, defaultRadius, initialVelocity;
 
+    public static enum GAME_MODE {
+        SURVIVOR, PROGRESSIVE
+    }
+
+    public  static enum DIFFICULTY {
+        VETERAN(5), HUMANE(10), NOBODY(20);
+
+        public final int hits;
+        DIFFICULTY(int i) {
+            this.hits = i;
+        }
+    }
+
+    public DIFFICULTY getDifficulty() {
+        return difficulty;
+    }
+
+    public void setDifficulty(DIFFICULTY difficulty) {
+        this.difficulty = difficulty;
+    }
+
+    public GAME_MODE getGameMode() {
+        return gameMode;
+    }
+
+    public void setGameMode(GAME_MODE gameMode) {
+        this.gameMode = gameMode;
+    }
+
+    private GAME_MODE gameMode;
+    private DIFFICULTY difficulty;
+
     public static WorldSpec create(int worldWidthArg, int worldHeightArg) {
         WorldSpec ret = new WorldSpec();
         ret.worldWidth = worldWidthArg;
@@ -65,7 +97,8 @@ public class WorldSpec {
             enemies.add(enemy);
         }
         ret.setEnemyList(enemies);
-
+        ret.gameMode = GAME_MODE.PROGRESSIVE;
+        ret.difficulty = DIFFICULTY.HUMANE;
         return ret;
     }
 

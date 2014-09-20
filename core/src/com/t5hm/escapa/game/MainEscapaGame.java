@@ -69,7 +69,7 @@ public class MainEscapaGame extends ApplicationAdapter {
 //        batch.draw(img, camera.viewportWidth / 2 - img.getWorldWidth()/2, camera.viewportHeight / 2 - img.getWorldHeight()/2);
         batch.draw(img, 0, 0, camera.viewportWidth, camera.viewportHeight);
 		batch.end();
-        masterBuilder.update();
+//        masterBuilder.update(batch, delta);
         debugRenderer.render(world, camera.combined);
         doPhysicsStep(Gdx.graphics.getDeltaTime());
 
