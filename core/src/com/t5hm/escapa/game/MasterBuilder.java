@@ -71,6 +71,9 @@ public class MasterBuilder {
         GameScoreMode gameScoreMode = setupScoreMode(worldSpec.getGameMode(), worldSpec.getDifficulty());
         gamifiedWorld.setGameScoreMode(gameScoreMode);
 
+        EscapaContactListener contactListener = new EscapaContactListener(gamifiedWorld);
+        world.setContactListener(contactListener);
+
         return gamifiedWorld;
     }
 
@@ -129,8 +132,8 @@ public class MasterBuilder {
         velocity.rotate(sphere.getInitialDirectionDeg());
         body.setLinearVelocity(velocity);
         FixtureDef circleFixtureDef = createCircleFixtureDef(sphere.getRadius());
-        body.createFixture(circleFixtureDef);
-        body.setUserData(sphere);
+        Fixture fixture = body.createFixture(circleFixtureDef);
+        fixture.setUserData(sphere);
         return body;
     }
 

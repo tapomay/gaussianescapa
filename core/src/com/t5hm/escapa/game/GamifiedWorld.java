@@ -171,4 +171,8 @@ public class GamifiedWorld {
         display = display.replace("${HITS}", hitsStr);
         System.out.println(display);
     }
+
+    public void playerHit() {
+        hits++;
+    }
 }
