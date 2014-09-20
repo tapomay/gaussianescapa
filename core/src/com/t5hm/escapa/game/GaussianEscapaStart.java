@@ -15,8 +15,8 @@ public class GaussianEscapaStart extends Game {
     @Override
     public void create() {
 //        setScreen(new T5HMSplash());
-//        setScreen(new EscapaGameScreen());
-        setScreen(new MainMenuScreen());
+        setScreen(new EscapaGameScreen());
+//        setScreen(new MainMenuScreen());
     }
 
     @Override

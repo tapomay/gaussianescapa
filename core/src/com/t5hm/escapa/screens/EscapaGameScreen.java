@@ -15,6 +15,7 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.t5hm.escapa.game.Constants;
 import com.t5hm.escapa.game.EscapaLightsInputAdapter;
+import com.t5hm.escapa.game.GamifiedWorld;
 import com.t5hm.escapa.game.GaussianEscapaStart;
 import com.t5hm.escapa.game.MasterBuilder;
 import com.t5hm.escapa.game.WorldSpec;
@@ -29,7 +30,7 @@ public class EscapaGameScreen implements Screen {
     private float accumulator = 0;
     private SpriteBatch batch;
     private Texture img;
-    private MasterBuilder masterBuilder;
+    private GamifiedWorld gamifiedWorld;
 
     private OrthographicCamera camera;
     private World world;
@@ -57,11 +58,11 @@ public class EscapaGameScreen implements Screen {
         RayHandler.useDiffuseLight(true);
 
         rayHandler = new RayHandler(world);
-        masterBuilder = new MasterBuilder(world, rayHandler);
-        masterBuilder.createWorld(worldSpec);
+        MasterBuilder masterBuilder = new MasterBuilder();
+        this.gamifiedWorld = masterBuilder.createWorld(world, rayHandler, worldSpec);
 
         camera.update(true);
-        Gdx.input.setInputProcessor(new EscapaLightsInputAdapter(camera, masterBuilder));
+        Gdx.input.setInputProcessor(new EscapaLightsInputAdapter(camera, gamifiedWorld));
     }
 
     @Override
@@ -71,7 +72,7 @@ public class EscapaGameScreen implements Screen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         batch.begin();
         batch.draw(img, 0, 0, camera.viewportWidth, camera.viewportHeight);
-        masterBuilder.update(batch, delta);
+        gamifiedWorld.update(batch, delta);
         batch.end();
         debugRenderer.render(world, camera.combined);
         doPhysicsStep(Gdx.graphics.getDeltaTime());

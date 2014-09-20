@@ -1,8 +1,7 @@
 package com.t5hm.escapa.game;
 
-import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
@@ -13,7 +12,6 @@ import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.t5hm.escapa.game.scores.GameScoreMode;
 import com.t5hm.escapa.game.scores.ProgressiveMode;
 import com.t5hm.escapa.game.scores.SurvivorMode;
@@ -25,9 +23,7 @@ import com.t5hm.escapa.gaussian.MagSphere;
 import com.t5hm.escapa.gaussian.Player;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import box2dLight.Light;
 import box2dLight.PointLight;
@@ -40,46 +36,46 @@ public class MasterBuilder {
 
     private static final int RAYS_PER_BALL = 200;
     private static final float LIGHT_DISTANCE = 30f;
+    public static final String TIME_TEMPLATE = "TIME: ${TIME}";
+    public static final String HITS_TEMPLATE = "HITS: ${HITS}";
+    public static final String SCORE_TEMPLATE = "TIME: ${TIME} \nHITS: ${HITS}";
 
-    private World world;
-    private RayHandler rayHandler;
-    private Body playerBody;
-    private List<Body> enemyBodyList;
-    private List<Fixture> magFixtureList;
-    private Set<ControlMagnet> magnetizedMagnets;
-    private float timeElapsed = 0f;
-    private int timeDisplayed = 0;
-    private GameScoreMode gameScoreMode;
 
-    public MasterBuilder(World world, RayHandler rayHandler) {
-        this.world = world;
-        this.rayHandler = rayHandler;
-        this.magnetizedMagnets = new HashSet<ControlMagnet>();
+    public MasterBuilder() {
     }
 
-    public World createWorld(WorldSpec worldSpec) {
-        Arena arena = worldSpec.getArena();
-        List<ControlMagnet> magList = worldSpec.getMagList();
-        magFixtureList = new ArrayList<Fixture>(magList.size());
+    public GamifiedWorld createWorld(World world, RayHandler rayHandler, WorldSpec worldSpec) {
 
-        materializeArena(arena, magList);
+        GamifiedWorld gamifiedWorld = new GamifiedWorld(worldSpec);
+        Arena arena = worldSpec.getArena();
+
+        List<ControlMagnet> magList = worldSpec.getMagList();
+        List<Fixture> magFixtureList = new ArrayList<Fixture>(magList.size());
+        materializeArena(world, arena, magList, magFixtureList);
+        gamifiedWorld.setMagFixtureList(magFixtureList);
 
         Player player = worldSpec.getPlayer();
-        playerBody = materializeMagSphere(player);
+        Body playerBody = materializeMagSphere(world, player);
+        gamifiedWorld.setPlayerBody(playerBody);
 
         List<Enemy> enemyList = worldSpec.getEnemyList();
-        enemyBodyList = new ArrayList<Body>(enemyList.size());
+        List<Body> enemyBodyList = new ArrayList<Body>(enemyList.size());
         for (Enemy enemy : enemyList) {
-            Body enemyBody = materializeMagSphere(enemy);
+            Body enemyBody = materializeMagSphere(world, enemy);
             enemyBodyList.add(enemyBody);
         }
 
-        setupEffects(rayHandler);
-        setupScoreMode(worldSpec.getGameMode(), worldSpec.getDifficulty());
-        return world;
+        gamifiedWorld.setEnemyBodyList(enemyBodyList);
+        setupEffects(rayHandler, playerBody, enemyBodyList);
+
+        GameScoreMode gameScoreMode = setupScoreMode(worldSpec.getGameMode(), worldSpec.getDifficulty());
+        gamifiedWorld.setGameScoreMode(gameScoreMode);
+
+        return gamifiedWorld;
     }
 
-    private void setupScoreMode(WorldSpec.GAME_MODE gameMode, WorldSpec.DIFFICULTY difficulty) {
+    private GameScoreMode setupScoreMode(WorldSpec.GAME_MODE gameMode, WorldSpec.DIFFICULTY difficulty) {
+        GameScoreMode gameScoreMode = null;
         switch (gameMode) {
 
             case SURVIVOR:
@@ -89,10 +85,10 @@ public class MasterBuilder {
                 gameScoreMode = new ProgressiveMode();
                 break;
         }
-
+        return gameScoreMode;
     }
 
-    private void setupEffects(RayHandler rayHandler) {
+    private void setupEffects(RayHandler rayHandler, Body playerBody, List<Body> enemyBodyList) {
         MathUtils.random.setSeed(Long.MIN_VALUE);
 
         rayHandler.setAmbientLight(0.2f, 0.2f, 0.2f, 0.1f);
@@ -124,7 +120,7 @@ public class MasterBuilder {
         return circleFixtureDef;
     }
 
-    private Body materializeMagSphere(MagSphere sphere) {
+    private Body materializeMagSphere(World world, MagSphere sphere) {
         BodyDef circleBodyDef = new BodyDef();
         circleBodyDef.type = BodyDef.BodyType.DynamicBody;
         circleBodyDef.position.set(sphere.getInitialX(), sphere.getInitialY());
@@ -138,7 +134,7 @@ public class MasterBuilder {
         return body;
     }
 
-    private Body materializeArena(Arena arena, List<ControlMagnet> magList) {
+    private Body materializeArena(World world, Arena arena, List<ControlMagnet> magList, List<Fixture> magFixtureList) {
         BodyDef arenaBodyDef = new BodyDef();
         arenaBodyDef.position.set(0, 0);
         arenaBodyDef.type = BodyDef.BodyType.StaticBody;
@@ -188,65 +184,4 @@ public class MasterBuilder {
         return arenaBody;
     }
 
-    public Body getPlayerBody() {
-        return playerBody;
-    }
-
-    public void setPlayerBody(Body playerBody) {
-        this.playerBody = playerBody;
-    }
-
-    public List<Body> getEnemyBodyList() {
-        return enemyBodyList;
-    }
-
-    public void setEnemyBodyList(List<Body> enemyBodyList) {
-        this.enemyBodyList = enemyBodyList;
-    }
-
-    public List<Fixture> getMagFixtureList() {
-        return magFixtureList;
-    }
-
-    public void setMagFixtureList(List<Fixture> magFixtureList) {
-        this.magFixtureList = magFixtureList;
-    }
-
-    public void magnetise(ControlMagnet mag) {
-        magnetizedMagnets.add(mag);
-//        System.out.println("MAG_ENABLE: " + mag.getArenaWall().getSide());
-    }
-
-    public void deMagnetise() {
-        magnetizedMagnets.clear();
-//        System.out.println("DEMAG");
-    }
-
-    public void update(SpriteBatch batch, float delta) {
-        for (ControlMagnet mag : magnetizedMagnets) {
-//            System.out.println("MAG_APPLY: " + mag.getArenaWall().getSide());
-            Vector2 force = mag.getForce();
-            playerBody.applyForceToCenter(force.x, force.y, true);
-        }
-        timeElapsed += delta;
-        if (timeElapsed - timeDisplayed > 1) {
-            timeDisplayed = (int) timeElapsed;
-//            score.setText(String.valueOf(timeDisplayed));
-//            score.invalidate();
-//            score.draw(batch, 0.5f);
-        }
-
-//        score.draw(batch, 1f);
-
-    }
-
-    private void setupScoreLabel() {
-        BitmapFont bitmapFont = new BitmapFont();
-        Label.LabelStyle labelStyle = new Label.LabelStyle(bitmapFont, Color.GREEN);
-//        score = new Label("100", labelStyle);
-//        score.setText("100");
-//        score.setCenterPosition(worldWidth/2, worldHeight/2);
-//        score.setWidth(50);
-//        score.setHeight(50);
-    }
 }

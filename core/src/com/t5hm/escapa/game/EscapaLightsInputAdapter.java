@@ -14,12 +14,12 @@ import java.util.List;
 public class EscapaLightsInputAdapter extends InputAdapter {
 
     private OrthographicCamera camera;
-    private MasterBuilder masterBuilder;
+    private GamifiedWorld gamifiedWorld;
     private Vector3 testPoint = new Vector3();
 
-    public EscapaLightsInputAdapter(OrthographicCamera camera, MasterBuilder masterBuilder) {
+    public EscapaLightsInputAdapter(OrthographicCamera camera, GamifiedWorld gamifiedWorld) {
         this.camera = camera;
-        this.masterBuilder = masterBuilder;
+        this.gamifiedWorld = gamifiedWorld;
     }
 
     @Override
@@ -28,13 +28,13 @@ public class EscapaLightsInputAdapter extends InputAdapter {
 //        System.out.println("TOUCHDOWN-PRE: " + testPoint);
         camera.unproject(testPoint);
 //        System.out.println("TOUCHDOWN: " + testPoint);
-        List<Fixture> magFixtureList = masterBuilder.getMagFixtureList();
+        List<Fixture> magFixtureList = gamifiedWorld.getMagFixtureList();
         for (Fixture magFixture : magFixtureList) {
 //            System.out.println("Testing against: " + magFixture.getBody().getPosition());
             boolean b = magFixture.testPoint(testPoint.x, testPoint.y);
             if (b) {
                 ControlMagnet mag = (ControlMagnet) magFixture.getUserData();
-                masterBuilder.magnetise(mag);
+                gamifiedWorld.magnetise(mag);
             }
         }
         return false;
@@ -42,7 +42,7 @@ public class EscapaLightsInputAdapter extends InputAdapter {
 
     @Override
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-        masterBuilder.deMagnetise();
+        gamifiedWorld.deMagnetise();
         return false;
     }
 

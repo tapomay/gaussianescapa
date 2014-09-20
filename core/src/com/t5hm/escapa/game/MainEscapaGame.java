@@ -17,7 +17,7 @@ public class MainEscapaGame extends ApplicationAdapter {
     private float accumulator = 0;
 	SpriteBatch batch;
 	Texture img;
-    private MasterBuilder masterBuilder;
+    private GamifiedWorld gamifiedWorld ;
 
     private OrthographicCamera camera;
     World world;
@@ -53,10 +53,10 @@ public class MainEscapaGame extends ApplicationAdapter {
         RayHandler.useDiffuseLight(true);
 
         rayHandler = new RayHandler(world);
-        masterBuilder = new MasterBuilder(world, rayHandler);
-        masterBuilder.createWorld(worldSpec);
+        MasterBuilder masterBuilder = new MasterBuilder();
+        this.gamifiedWorld = masterBuilder.createWorld(world, rayHandler, worldSpec);
         camera.update(true);
-        Gdx.input.setInputProcessor(new EscapaLightsInputAdapter(camera, masterBuilder));
+        Gdx.input.setInputProcessor(new EscapaLightsInputAdapter(camera, gamifiedWorld));
 	}
 
     @Override
